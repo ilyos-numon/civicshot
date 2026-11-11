@@ -1,0 +1,56 @@
+:root {
+  --cs-bg: #f7f7f5;
+  --cs-fg: #16181d;
+  --cs-primary: #1f6feb;
+  --cs-primary-fg: #fff;
+  --cs-danger: #d1242f;
+  --cs-ok: #1a7f37;
+  --cs-muted: #6e7781;
+  --cs-radius: 14px;
+  --cs-tap: 48px;
+  --cs-font: system-ui, -apple-system, 'Apple SD Gothic Neo', 'Noto Sans KR', 'Segoe UI', Roboto, sans-serif;
+  --cs-body-size: 17px;
+
+  /* 보조 토큰 */
+  --cs-surface: #ffffff;
+  --cs-line: #e3e3df;
+  --cs-primary-soft: #e8f0fd;
+  --cs-danger-soft: #fdecec;
+  --cs-ok-soft: #e7f4ea;
+  --cs-text-2: #4a5059;
+  /* 작은 보조 글자용: #f7f7f5 위 5.4:1, 흰 바탕 5.8:1 */
+  --cs-text-muted: #5f6670;
+  --cs-focus: #1f6feb;
+  --cs-shadow: 0 1px 2px rgb(22 24 29 / 6%), 0 4px 16px rgb(22 24 29 / 6%);
+  --cs-space-1: 4px;
+  --cs-space-2: 8px;
+  --cs-space-3: 12px;
+  --cs-space-4: 16px;
+  --cs-space-5: 24px;
+  --cs-space-6: 32px;
+  --cs-size-sm: 14px;
+  --cs-size-md: 15px;
+  --cs-size-lg: 22px;
+  --cs-size-xl: 28px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --cs-bg: #111316;
+    --cs-fg: #eceef1;
+    --cs-primary: #4c8df6;
+    --cs-primary-fg: #fff;
+    --cs-danger: #f2555f;
+    --cs-ok: #3fb35d;
+    --cs-muted: #9aa3ad;
+    --cs-surface: #1a1d21;
+    --cs-line: #2c3036;
+    --cs-primary-soft: #1a2a44;
+    --cs-danger-soft: #3a1c1f;
+    --cs-ok-soft: #173020;
+    --cs-text-2: #c1c7ce;
+    --cs-text-muted: #9aa3ad;
+    --cs-focus: #79a9ff;
+    --cs-shadow: none;
+  }
+}

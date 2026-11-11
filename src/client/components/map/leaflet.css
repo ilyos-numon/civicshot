@@ -1,0 +1,65 @@
+.cs-picker {
+  display: flex;
+  flex-direction: column;
+  gap: var(--cs-space-3, 12px);
+}
+.cs-picker__hint {
+  margin: 0;
+  color: var(--cs-text-2, #4a5059);
+  font-size: var(--cs-size-md, 15px);
+}
+.cs-picker__frame {
+  position: relative;
+  height: 320px;
+  border-radius: var(--cs-radius, 14px);
+  overflow: hidden;
+  border: 1px solid var(--cs-line, #e3e3df);
+}
+.cs-picker__map {
+  position: absolute;
+  inset: 0;
+}
+/* 지도 중앙에 고정된 핀. 핀 끝(아래 꼭짓점)이 정확히 중앙을 가리킨다. */
+.cs-picker__pin {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 28px;
+  height: 28px;
+  margin-left: -14px;
+  margin-top: -28px;
+  z-index: 500;
+  pointer-events: none;
+}
+.cs-picker__pin::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--cs-danger, #d1242f);
+  border: 3px solid #fff;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  box-shadow: 0 2px 6px rgb(0 0 0 / 30%);
+}
+.cs-picker__coords summary {
+  min-height: var(--cs-tap, 48px);
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: var(--cs-text-2, #4a5059);
+}
+.cs-picker__coords-row {
+  display: flex;
+  gap: var(--cs-space-2, 8px);
+}
+.cs-picker__coords label {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  font-size: var(--cs-size-sm, 14px);
+}
+.cs-picker__coords input {
+  min-height: var(--cs-tap, 48px);
+  font-size: var(--cs-body-size, 17px);
+  padding: 0 var(--cs-space-2, 8px);
+}
