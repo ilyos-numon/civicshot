@@ -1,0 +1,98 @@
+# Cloud Run 서비스 civicshot (Knative Service 형식). 공개 데모 모드로 돈다: 제출은 언제나 mock, 실제 기관으로 나가지 않는다.
+# 적용: deploy/gcp/apply-env.sh 가 ${IMAGE}·${PROJECT_ID}·${BASE_URL}·${VISION_BACKEND}·${LLM_BACKEND}·모델·타임아웃·요청 제한 값을 채우고,
+#       LLM 키 비밀이 있을 때만 #KEY# 줄을 살려 gcloud run services replace 한다. 자동 배포는 이미지만 바꾼다.
+# 서비스 주소는 https://civicshot-<프로젝트 번호>.<리전>.run.app 로 미리 정해지므로 첫 배포에도 BASE_URL 을 채울 수 있다.
+# 요청 제한은 서버 메모리에 있다(인스턴스가 내려가면 초기화). Cloud Run 앞단 프록시가 한 단 있어 TRUSTED_PROXY_HOPS=1.
+# 비용: 요청이 없으면 인스턴스 0 (minScale 0), 최대 1 (maxScale 1), 요청 처리 중에만 CPU.
+# 데이터는 /tmp/civicshot (인스턴스가 내려가면 사라진다). 루트 파일시스템에는 쓰지 않는다.
+# 시작·생존 확인은 /health. /healthz 는 Cloud Run 이 앱에 넘기지 않는다.
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: civicshot
+  labels:
+    cloud.googleapis.com/location: asia-northeast3
+  annotations:
+    run.googleapis.com/ingress: all
+    run.googleapis.com/invoker-iam-disabled: "true"
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/minScale: "0"
+        autoscaling.knative.dev/maxScale: "1"
+        run.googleapis.com/cpu-throttling: "true"
+        run.googleapis.com/startup-cpu-boost: "true"
+    spec:
+      serviceAccountName: civicshot-run@${PROJECT_ID}.iam.gserviceaccount.com
+      containerConcurrency: 40
+      timeoutSeconds: 60
+      containers:
+        - image: "${IMAGE}"
+          ports:
+            - name: http1
+              containerPort: 8870
+          resources:
+            limits:
+              cpu: "1"
+              memory: 512Mi
+          startupProbe:
+            httpGet:
+              path: /health
+              port: 8870
+            periodSeconds: 5
+            failureThreshold: 12
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8870
+            periodSeconds: 30
+          env:
+            - name: DEMO_MODE
+              value: "1"
+            - name: SUBMISSION_ADAPTER
+              value: "mock"
+            - name: GEOCODER
+              value: "offline"
+            - name: DATA_DIR
+              value: "/tmp/civicshot"
+            - name: TZ
+              value: "Asia/Seoul"
+            - name: SELF_BASE_URL
+              value: "${BASE_URL}"
+            - name: PUBLIC_BASE_URL
+              value: "${BASE_URL}"
+            - name: VISION_BACKEND
+              value: "${VISION_BACKEND}"
+            - name: LLM_BACKEND
+              value: "${LLM_BACKEND}"
+            - name: LLM_BASE_URL
+              value: "${LLM_BASE_URL}"
+            - name: LLM_MODEL
+              value: "${LLM_MODEL}"
+            - name: VISION_MODEL
+              value: "${VISION_MODEL}"
+            - name: VISION_TIMEOUT_MS
+              value: "${VISION_TIMEOUT_MS}"
+            - name: LLM_TIMEOUT_MS
+              value: "${LLM_TIMEOUT_MS}"
+            - name: TRUSTED_PROXY_HOPS
+              value: "1"
+            - name: RATE_LIMIT_PER_MINUTE
+              value: "${RATE_LIMIT_PER_MINUTE}"
+            - name: RATE_LIMIT_PER_DAY
+              value: "${RATE_LIMIT_PER_DAY}"
+            - name: RATE_LIMIT_DAILY_TOTAL
+              value: "${RATE_LIMIT_DAILY_TOTAL}"
+#KEY#            - name: LLM_API_KEY
+#KEY#              valueFrom:
+#KEY#                secretKeyRef:
+#KEY#                  name: CIVICSHOT_LLM_API_KEY
+#KEY#                  key: latest
+#VAPID#            - name: VAPID_PUBLIC_KEY
+#VAPID#              value: "${VAPID_PUBLIC_KEY}"
+#VAPID#            - name: VAPID_PRIVATE_KEY
+#VAPID#              valueFrom:
+#VAPID#                secretKeyRef:
+#VAPID#                  name: CIVICSHOT_VAPID_PRIVATE_KEY
+#VAPID#                  key: latest
