@@ -1,0 +1,10 @@
+CREATE TABLE IF NOT EXISTS photos (id TEXT PRIMARY KEY, path TEXT, lat REAL, lng REAL, taken_at TEXT, width INT, height INT, bytes INT, sha256 TEXT, created_at TEXT, purged INT DEFAULT 0);
+CREATE TABLE IF NOT EXISTS issues (id TEXT PRIMARY KEY, receipt_no TEXT UNIQUE, status_token TEXT UNIQUE, facility TEXT, fault TEXT, lat REAL, lng REAL, h3 TEXT, sig_code TEXT, sig_name TEXT, department TEXT, address_label TEXT, status TEXT, report_count INT, agency_ref TEXT, completion_photo_id TEXT, created_at TEXT, updated_at TEXT);
+CREATE TABLE IF NOT EXISTS reports (id TEXT PRIMARY KEY, issue_id TEXT, photo_id TEXT, reporter_token TEXT, form_title TEXT, form_body TEXT, form_source TEXT, merged INT, created_at TEXT);
+CREATE TABLE IF NOT EXISTS push_subscriptions (id TEXT PRIMARY KEY, issue_id TEXT, subscription_json TEXT, created_at TEXT);
+CREATE TABLE IF NOT EXISTS submission_attempts (id INTEGER PRIMARY KEY AUTOINCREMENT, issue_id TEXT, adapter TEXT, ok INT, error TEXT, created_at TEXT);
+CREATE TABLE IF NOT EXISTS agency_requests (id TEXT PRIMARY KEY, service_code TEXT, description TEXT, lat REAL, lng REAL, media_url TEXT, status TEXT, completion_photo_id TEXT, requested_at TEXT, updated_at TEXT);
+CREATE INDEX IF NOT EXISTS idx_issues_h3 ON issues(h3);
+CREATE INDEX IF NOT EXISTS idx_issues_status ON issues(status);
+CREATE INDEX IF NOT EXISTS idx_reports_issue_id ON reports(issue_id);
+CREATE INDEX IF NOT EXISTS idx_photos_created_at ON photos(created_at);
