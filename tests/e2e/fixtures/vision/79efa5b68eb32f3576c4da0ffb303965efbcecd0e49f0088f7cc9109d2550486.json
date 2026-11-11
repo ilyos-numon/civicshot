@@ -1,0 +1,18 @@
+{
+  "facility": "bench",
+  "fault": "broken",
+  "confidence": 0.92,
+  "candidates": [
+    {
+      "facility": "bench",
+      "fault": "broken",
+      "confidence": 0.92
+    },
+    {
+      "facility": "bench",
+      "fault": "graffiti",
+      "confidence": 0.05
+    }
+  ],
+  "source": "fixture"
+}
